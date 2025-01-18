@@ -1,0 +1,41 @@
+get http://localhost:3333
+
+###
+
+post http://localhost:3333/signup
+Content-Type: application/json
+
+{
+    "username": "testUser",
+    "email": "test@gmail.com",
+    "password": "test123"
+    
+}
+
+###
+
+post http://localhost:3333/login
+Content-Type: application/json
+
+{
+    "email": "test@gmail.com",
+    "password": "test123"
+}
+
+###
+
+post http://localhost:3333/createTodo
+Content-Type: application/json
+
+{
+    "title": "criado 1",
+    "description": "the first"
+}
+
+###
+
+get http://localhost:3333/users
+
+###
+
+delete http://localhost:3333/users
