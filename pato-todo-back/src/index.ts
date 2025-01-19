@@ -23,7 +23,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.post("/signup", async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { username, email, password } = req.body;
     const newUser = await createUser(username, email, password);
     const token = jwt.sign(
@@ -42,23 +41,23 @@ app.post("/signup", async (req: Request, res: Response) => {
 
 app.get("/users", async (req, res) => {
   try {
-    const users = await getAllUsers(); // Call the function to get all users
-    res.status(200).json(users); // Respond with the list of users
+    const users = await getAllUsers();
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch users" }); // Internal server error
+    res.status(500).json({ error: "Failed to fetch users" });
   }
 });
 
 app.delete("/users", async (req, res) => {
   try {
-    const result = await deleteAllUsers(); // Call the function to delete all users
+    const result = await deleteAllUsers();
     res
       .status(200)
-      .json({ message: "All users have been deleted successfully." }); // Success message
+      .json({ message: "All users have been deleted successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to delete users" }); // Internal server error
+    res.status(500).json({ error: "Failed to delete users" });
   }
 });
 
@@ -70,6 +69,7 @@ app.post("/login", async (req: Request, res: Response) => {
     if (!User) {
       res.status(401).send("Unauthorized !!!");
     }
+
     const token = jwt.sign({ email: email, userId: User?.id }, "#1234astra");
     res.status(200).json({ token: token, message: "Login Succesfully!!!" });
   } catch (error) {
@@ -80,13 +80,13 @@ app.post("/login", async (req: Request, res: Response) => {
 
 app.post("/createTodo", async (req: Request, res: Response) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, dueDate } = req.body;
     const token = req.headers.authorization?.split(" ")[1];
 
     if (token) {
       const decodeToken = jwt.decode(token) as JwtPayload | null;
       const userId = decodeToken?.userId;
-      const newTodo = await createTodo(userId, title, description, new Date());
+      const newTodo = await createTodo(userId, title, description, dueDate);
       if (newTodo) {
         res
           .status(200)
@@ -106,8 +106,8 @@ app.post("/createTodo", async (req: Request, res: Response) => {
 app.patch("/updateTodo/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { title, description, status } = req.body;
-    await updateTodo(parseInt(id), { title, description, status });
+    const { title, description, status, dueDate } = req.body;
+    await updateTodo(parseInt(id), { title, description, status, dueDate });
     res.status(200).send("Todo Updated Successfully!!!");
   } catch (error) {
     console.error(error);
