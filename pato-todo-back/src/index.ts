@@ -8,6 +8,8 @@ import {
   deleteTodo,
   getAllUsers,
   deleteAllUsers,
+  getAllTodosAll,
+  deleteAllTodos,
 } from "./db";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import cors from "cors";
@@ -107,8 +109,16 @@ app.patch("/updateTodo/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, status, dueDate } = req.body;
-    await updateTodo(parseInt(id), { title, description, status, dueDate });
-    res.status(200).send("Todo Updated Successfully!!!");
+
+    console.log("Received Data:", { id, title, description, status, dueDate });
+
+    const updatedTodo = await updateTodo(parseInt(id), {
+      title,
+      description,
+      status,
+      dueDate,
+    });
+    res.status(200).json(updatedTodo);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -138,7 +148,7 @@ app.delete("/deleteTodo/:id", async (req: Request, res: Response) => {
   try {
     debugger;
     const todo_id = parseInt(req.params.id);
-    console.log(todo_id);
+
     const deleted = await deleteTodo(todo_id);
     if (deleted) {
       res.status(200).send("Todo deleted successfully!!!");
@@ -146,6 +156,28 @@ app.delete("/deleteTodo/:id", async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.send(500).send("Internal Server Error");
+  }
+});
+
+app.get("/getAllTodos", async (req: Request, res: Response) => {
+  try {
+    const todos = await getAllTodosAll();
+    res.status(200).json({ data: todos, message: "All Todos" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch todos" });
+  }
+});
+
+app.delete("/deleteTodos", async (req: Request, res: Response) => {
+  try {
+    const result = await deleteAllTodos();
+    res
+      .status(200)
+      .json({ message: "All todos have been deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete todos" });
   }
 });
 

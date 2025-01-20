@@ -93,4 +93,12 @@ export const deleteAllUsers = async () => {
   return await prisma.user.deleteMany();
 };
 
+export const getAllTodosAll = async () => {
+  return await prisma.todo.findMany();
+};
+
+export const deleteAllTodos = async () => {
+  return await prisma.todo.deleteMany();
+};
+
 export default prisma;

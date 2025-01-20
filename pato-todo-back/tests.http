@@ -42,5 +42,8 @@ delete http://localhost:3333/users
 
 ###
 
-get http://localhost:3333/getTodos
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InQxQG0uY29tIiwidXNlcklkIjoxOSwiaWF0IjoxNzM3MjY5NDcwfQ.UmiImRp7D9xpK3a8a2nT7wSnQUWaWT--aKc2MV4GOks
+get http://localhost:3333/getAllTodos
+
+###
+
+delete http://localhost:3333/deleteTodos
