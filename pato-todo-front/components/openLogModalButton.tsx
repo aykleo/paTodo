@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/context/authContext";
 interface OpenModalButtonProps {
   className?: string;
   children?: React.ReactNode;
-  modalId: string;
+  modalId?: string;
   onClick?: React.Dispatch<React.SetStateAction<string>>;
 }
 

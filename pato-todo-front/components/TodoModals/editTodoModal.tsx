@@ -2,29 +2,48 @@
 
 import { todoValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Calendar1Icon,
-  SplineIcon,
-  StickyNoteIcon,
-  TextIcon,
-  XIcon,
-} from "lucide-react";
+import { Calendar1Icon, StickyNoteIcon, TextIcon, XIcon } from "lucide-react";
 import { useAuth } from "@/lib/context/authContext";
 import { useTodos } from "@/lib/context/todoContext";
 
-export default function CreateTodoModal() {
+enum TodoStatus {
+  "PENDING",
+  "IN_PROGRESS",
+  "COMPLETED",
+}
+
+interface UpdateTodoModalProps {
+  todoId: number;
+  currentTitle: string;
+  currentDescription: string;
+  currentStatus: TodoStatus;
+  currentDueDate: Date;
+}
+
+export default function UpdateTodoModal({
+  todoId,
+  currentTitle,
+  currentDescription,
+  currentStatus,
+}: UpdateTodoModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useAuth();
-  const { addTodo } = useTodos();
+  const { todos, updateTodos } = useTodos();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(todoValidation),
   });
+
+  useEffect(() => {
+    setValue("title", currentTitle);
+    setValue("description", currentDescription);
+  }, [currentTitle, currentDescription, setValue]);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -33,49 +52,69 @@ export default function CreateTodoModal() {
       const todoData = {
         title: data.title,
         description: data.description,
-        dueDate: data.dueDate,
+        status: currentStatus,
+        dueDate: new Date(data.dueDate).toISOString(),
       };
 
-      const response = await fetch("http://localhost:3333/createTodo", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(todoData),
-      });
+      const response = await fetch(
+        `http://localhost:3333/updateTodo/${todoId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(todoData),
+        }
+      );
 
       if (response.ok) {
-        const newTodo = await response.json();
+        const updatedTodo = await response.json();
 
-        addTodo(newTodo);
+        const updatedTodos = todos.map((todo) =>
+          todo.data.id === todoId ? { ...todo, data: updatedTodo } : todo
+        );
 
-        alert("Todo created successfully!");
+        updateTodos(updatedTodos);
 
-        const modal = document.getElementById("create_todo_modal");
+        const todosInLocalStorage = JSON.parse(
+          localStorage.getItem("todos") || "[]"
+        );
+        const updatedTodosInLocalStorage = todosInLocalStorage.map((todo) =>
+          todo.id === todoId ? { ...todo, data: updatedTodo } : todo
+        );
+        localStorage.setItem(
+          "todos",
+          JSON.stringify(updatedTodosInLocalStorage)
+        );
+
+        alert("Todo updated successfully!");
+
+        const modal = document.getElementById("edit_todo_modal");
         if (modal instanceof HTMLDialogElement) {
           modal.close();
         }
       } else {
-        console.error("Failed to create todo");
+        const errorText = await response.text();
+        console.error("Failed to update todo:", errorText);
       }
     } catch (error) {
-      console.error("Error during todo creation:", error);
-      alert("An error occurred while creating todo.");
+      console.error("Error during todo update:", error);
+      alert("An error occurred while updating todo.");
     } finally {
       setIsLoading(false);
     }
-
-    console.log("Form data submitted:", data);
   };
 
   return (
-    <dialog id="create_todo_modal" className="modal">
-      <div className="remove-scrollbar fixed inset-0  flex items-center justify-center overflow-auto bg-black/25 backdrop-blur-sm">
+    <dialog id="edit_todo_modal" className="modal">
+      <div className="remove-scrollbar fixed inset-0 flex items-center justify-center overflow-auto bg-black/25 backdrop-blur-sm">
         <div className="h-96 w-96 flex items-center justify-center text-white">
           <div className="max-w-md mx-auto p-6 bg-neutral-800 shadow-md rounded-lg">
             <div className="flex justify-between items-center w-full">
-              <h2 className="text-4xl font-semibold mb-4">New To Do</h2>
+              <h2 className="text-4xl font-semibold mb-4">
+                Edit {currentTitle}
+              </h2>
               <form method="dialog">
                 <button>
                   <XIcon className="text-white size-8 bg-neutral-700 hover:bg-neutral-600 rounded-md" />
@@ -154,9 +193,9 @@ export default function CreateTodoModal() {
                   className="w-full bg-cyan-500 text-white p-2 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {!isLoading ? (
-                    "CREATE"
+                    "UPDATE"
                   ) : (
-                    <SplineIcon className="animate-spin" />
+                    <span className="animate-spin">...</span>
                   )}
                 </button>
               </div>

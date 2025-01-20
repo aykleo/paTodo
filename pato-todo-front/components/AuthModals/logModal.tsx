@@ -76,7 +76,7 @@ export default function LogModal() {
                 <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md focus-within:ring-2 focus-within::ring-cyan-500">
                   <AtSignIcon />
                   <input
-                    id="email"
+                    id="login_email"
                     type="email"
                     {...register("email")}
                     className="bg-transparent focus:outline-none px-1 w-full"
@@ -100,7 +100,7 @@ export default function LogModal() {
                 <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md hover:ring-cyan-400 focus-within:ring-2 focus-within::ring-cyan-400">
                   <LockKeyholeIcon />
                   <input
-                    id="password"
+                    id="login_password"
                     type="password"
                     {...register("password")}
                     className="bg-transparent focus:outline-none px-1 w-full"
