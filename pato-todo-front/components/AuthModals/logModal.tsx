@@ -6,9 +6,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AtSignIcon, LockKeyholeIcon, SplineIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTodos } from "@/lib/context/todoContext";
 
 export default function LogModal() {
   const [isLoading, setIsLoading] = useState(false);
+  const { getTodos } = useTodos();
   const {
     register,
     handleSubmit,
@@ -38,8 +40,13 @@ export default function LogModal() {
       const responseData = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("authToken", responseData.token);
+        const token = responseData.token;
+
+        localStorage.setItem("authToken", token);
+
+        await getTodos(token);
         const email = userData.email;
+
         alert("User logged successfully!");
         router.push(`/user/${email}`);
       } else {
@@ -51,8 +58,6 @@ export default function LogModal() {
     } finally {
       setIsLoading(false);
     }
-
-    console.log("Form data submitted:", data);
   };
 
   return (

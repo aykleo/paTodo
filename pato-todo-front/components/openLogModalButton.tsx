@@ -1,6 +1,8 @@
 "use client";
 
 import { useAuth } from "@/lib/context/authContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface OpenModalButtonProps {
   className?: string;
@@ -10,7 +12,14 @@ interface OpenModalButtonProps {
 }
 
 const OpenLogModalButton = ({ className }: OpenModalButtonProps) => {
-  const { email, logOut } = useAuth();
+  const { token, email, logOut } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <>

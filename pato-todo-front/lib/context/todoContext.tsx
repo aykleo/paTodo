@@ -69,7 +69,7 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   };
 
   const addTodo = (newTodo: Todo) => {
-    const updatedTodos = [...todos, newTodo];
+    const updatedTodos = Array.isArray(todos) ? [...todos, newTodo] : [newTodo];
     setTodos(updatedTodos);
     localStorage.setItem("toDoList", JSON.stringify(updatedTodos));
   };
@@ -83,10 +83,8 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         },
       });
 
-      const getTodosResponseText = await getTodosResponse.text();
-
       if (getTodosResponse.ok) {
-        const todosData: Todo[] = JSON.parse(getTodosResponseText);
+        const todosData: Todo[] = await getTodosResponse.json();
         updateTodos(todosData);
       } else {
         console.error("Failed to fetch todos");

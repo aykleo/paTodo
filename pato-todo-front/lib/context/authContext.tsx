@@ -55,8 +55,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logOut = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("toDoList");
     setEmail(null);
     setToken(null);
+    setId(null);
     router.push("/");
   };
 
