@@ -34,6 +34,11 @@ Content-Type: application/json
 
 ###
 
+get http://localhost:3333/getTodos
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InQxQG0uY29tIiwidXNlcklkIjoxOSwiaWF0IjoxNzM3NDIyMzg0fQ.E9rJbT0Kk0nQXJn0WhsO963avrNVJ-hqn8WzJY-Y_m0"
+
+###
+
 get http://localhost:3333/users
 
 ###

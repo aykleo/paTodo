@@ -55,10 +55,10 @@ export const createTodo = async (
   });
 };
 
-export const getAllTodos = async (username: string) => {
+export const getAllTodos = async (email: string) => {
   const user = await prisma.user.findUnique({
     where: {
-      username: username,
+      email: email,
     },
     include: {
       todos: true,
@@ -66,7 +66,7 @@ export const getAllTodos = async (username: string) => {
   });
 
   if (!user) {
-    throw new Error(`User with username ${username} not found`);
+    throw new Error(`User with email ${email} not found`);
   }
 
   return user.todos;

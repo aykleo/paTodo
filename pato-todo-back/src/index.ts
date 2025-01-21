@@ -69,7 +69,10 @@ app.post("/login", async (req: Request, res: Response) => {
     const User = await checkUser(email, password);
 
     if (!User) {
-      res.status(401).send("Unauthorized !!!");
+      res
+        .status(401)
+        .json({ error: "Unauthorized", message: "Invalid email or password." });
+      return;
     }
 
     const token = jwt.sign({ email: email, userId: User?.id }, "#1234astra");
@@ -128,15 +131,21 @@ app.patch("/updateTodo/:id", async (req: Request, res: Response) => {
 app.get("/getTodos", async (req: Request, res: Response) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
+
     if (token) {
       const decodeToken = jwt.decode(token) as JwtPayload | null;
       const email = decodeToken?.email;
-      const allTodos = await getAllTodos(email);
-      if (allTodos && allTodos.length > 0) {
-        res.status(200).json({ data: allTodos, message: "All Todos" });
-        return;
+
+      if (email) {
+        const allTodos = await getAllTodos(email);
+
+        if (allTodos && allTodos.length > 0) {
+          res.status(200).json(allTodos);
+          return;
+        }
       }
     }
+
     res.status(404).send("No Todos Found !!!");
   } catch (error) {
     console.error(error);
