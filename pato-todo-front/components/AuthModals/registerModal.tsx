@@ -3,11 +3,11 @@
 import { userRegisterValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, FieldValues, useForm } from "react-hook-form";
 import {
   AtSignIcon,
+  LoaderIcon,
   LockKeyholeIcon,
-  SplineIcon,
   UserIcon,
   XIcon,
 } from "lucide-react";
@@ -24,7 +24,7 @@ export default function RegisterModal() {
   });
   const router = useRouter();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
 
     try {
@@ -58,7 +58,6 @@ export default function RegisterModal() {
         if (response.ok) {
           localStorage.setItem("authToken", responseData.token);
           const email = userData.email;
-          alert("User logged successfully!");
           router.push(`/user/${email}`);
         }
       } else {
@@ -77,13 +76,13 @@ export default function RegisterModal() {
   return (
     <dialog id="register_modal" className="modal">
       <div className="remove-scrollbar fixed inset-0  flex items-center justify-center overflow-auto bg-black/25 backdrop-blur-sm">
-        <div className="h-96 w-96 flex items-center justify-center text-white">
-          <div className="max-w-md mx-auto p-6 bg-neutral-800 shadow-md rounded-lg">
+        <div className="h-96 w-96 flex items-center justify-center text-gray-300 ">
+          <div className="max-w-md mx-auto p-6 bg-neutral-900 shadow-md shadow-black rounded-lg border border-gray-400">
             <div className="flex justify-between items-center w-full">
               <h2 className="text-4xl font-semibold mb-4">Register</h2>
               <form method="dialog">
                 <button>
-                  <XIcon className="text-white size-8 bg-neutral-700 hover:bg-neutral-600 rounded-md" />
+                  <XIcon className="text-white size-8 bg-black hover:bg-neutral-950 rounded-md" />
                 </button>
               </form>
             </div>
@@ -106,8 +105,8 @@ export default function RegisterModal() {
                 </div>
 
                 {errors.username && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.username.message}
+                  <p className="text-red-400 text-sm mt-1">
+                    {(errors.username as FieldError).message}
                   </p>
                 )}
               </div>
@@ -127,8 +126,8 @@ export default function RegisterModal() {
                 </div>
 
                 {errors.email && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.email.message}
+                  <p className="text-red-400 text-sm mt-1">
+                    {(errors.email as FieldError).message}
                   </p>
                 )}
               </div>
@@ -151,8 +150,8 @@ export default function RegisterModal() {
                 </div>
 
                 {errors.password && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.password.message}
+                  <p className="text-red-400 text-sm mt-1">
+                    {(errors.password as FieldError).message}
                   </p>
                 )}
               </div>
@@ -175,8 +174,8 @@ export default function RegisterModal() {
                 </div>
 
                 {errors.confirmPassword && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.confirmPassword.message}
+                  <p className="text-red-400 text-sm mt-1">
+                    {(errors.confirmPassword as FieldError).message}
                   </p>
                 )}
               </div>
@@ -184,12 +183,12 @@ export default function RegisterModal() {
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-cyan-500 text-white p-2 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border flex items-center justify-center h-full w-full text-xl rounded-md p-2 text-gray-200 bg-black border-gray-600 hover:bg-zinc-950 focus:outline outline-cyan-400"
                 >
                   {!isLoading ? (
                     "REGISTER"
                   ) : (
-                    <SplineIcon className="animate-spin" />
+                    <LoaderIcon className="animate-spin" />
                   )}
                 </button>
               </div>

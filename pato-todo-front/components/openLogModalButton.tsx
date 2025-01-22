@@ -16,10 +16,16 @@ const OpenLogModalButton = ({ className }: OpenModalButtonProps) => {
   const router = useRouter();
 
   useEffect(() => {
+    if (token === undefined || email === undefined) {
+      return;
+    }
+
     if (!token) {
       router.push("/");
+    } else {
+      router.push(`/user/${email}`);
     }
-  }, []);
+  }, [token, email]);
 
   return (
     <>

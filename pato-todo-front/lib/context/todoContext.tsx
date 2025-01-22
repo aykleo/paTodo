@@ -8,20 +8,21 @@ import React, {
   ReactNode,
 } from "react";
 
-enum TodoStatus {
-  PENDING,
-  IN_PROGRESS,
-  COMPLETED,
+export enum TodoStatus {
+  ALL = "ALL",
+  COMPLETED = "COMPLETED",
+  IN_PROGRESS = "IN_PROGRESS",
+  PENDING = "PENDING",
 }
 
 export enum SortingStatus {
   ALL,
-  PENDING,
-  IN_PROGRESS,
   COMPLETED,
+  IN_PROGRESS,
+  PENDING,
 }
 
-interface Todo {
+export interface Todo {
   id: number;
   title: string;
   description: string;

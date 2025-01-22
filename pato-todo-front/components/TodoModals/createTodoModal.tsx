@@ -3,10 +3,10 @@
 import { todoValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, FieldValues, useForm } from "react-hook-form";
 import {
   Calendar1Icon,
-  SplineIcon,
+  LoaderIcon,
   StickyNoteIcon,
   TextIcon,
   XIcon,
@@ -26,7 +26,7 @@ export default function CreateTodoModal() {
     resolver: zodResolver(todoValidation),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FieldValues) => {
     setIsLoading(true);
 
     try {
@@ -50,8 +50,6 @@ export default function CreateTodoModal() {
 
         addTodo(newTodo);
 
-        alert("Todo created successfully!");
-
         const modal = document.getElementById("create_todo_modal");
         if (modal instanceof HTMLDialogElement) {
           modal.close();
@@ -73,12 +71,12 @@ export default function CreateTodoModal() {
     <dialog id="create_todo_modal" className="modal">
       <div className="remove-scrollbar fixed inset-0  flex items-center justify-center overflow-auto bg-black/25 backdrop-blur-sm">
         <div className="h-96 w-96 flex items-center justify-center text-white">
-          <div className="max-w-md mx-auto p-6 bg-neutral-800 shadow-md rounded-lg">
+          <div className="max-w-md mx-auto p-6 bg-neutral-900 shadow-md rounded-lg border border-gray-400 shadow-black">
             <div className="flex justify-between items-center w-full">
               <h2 className="text-4xl font-semibold mb-4">New To Do</h2>
               <form method="dialog">
                 <button>
-                  <XIcon className="text-white size-8 bg-neutral-700 hover:bg-neutral-600 rounded-md" />
+                  <XIcon className="text-white size-8 bg-black hover:bg-neutral-950 rounded-md" />
                 </button>
               </form>
             </div>
@@ -98,8 +96,8 @@ export default function CreateTodoModal() {
                 </div>
 
                 {errors.title && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.title.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.title as FieldError).message}
                   </p>
                 )}
               </div>
@@ -121,8 +119,8 @@ export default function CreateTodoModal() {
                 </div>
 
                 {errors.description && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.description.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.description as FieldError).message}
                   </p>
                 )}
               </div>
@@ -131,7 +129,7 @@ export default function CreateTodoModal() {
                 <label htmlFor="dueDate" className="block text-sm font-medium ">
                   Due date
                 </label>
-                <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md hover:ring-cyan-400 focus-within:ring-2 focus-within::ring-cyan-400">
+                <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md focus-within:ring-2 focus-within::ring-cyan-400">
                   <Calendar1Icon />
                   <input
                     id="dueDate"
@@ -142,8 +140,8 @@ export default function CreateTodoModal() {
                 </div>
 
                 {errors.dueDate && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.dueDate.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.dueDate as FieldError).message}
                   </p>
                 )}
               </div>
@@ -151,12 +149,12 @@ export default function CreateTodoModal() {
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-cyan-500 text-white p-2 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border flex items-center justify-center h-full w-full text-xl rounded-md p-2 text-gray-200 bg-black border-gray-600 hover:bg-zinc-950 focus:outline outline-cyan-400"
                 >
                   {!isLoading ? (
                     "CREATE"
                   ) : (
-                    <SplineIcon className="animate-spin" />
+                    <LoaderIcon className="animate-spin" />
                   )}
                 </button>
               </div>

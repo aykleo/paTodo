@@ -20,6 +20,12 @@ interface AuthContextType {
   logOut: () => void;
 }
 
+export interface User {
+  username: string;
+  password: string;
+  email: string;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

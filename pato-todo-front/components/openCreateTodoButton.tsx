@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/context/authContext";
 import { SortingStatus, useTodos } from "@/lib/context/todoContext";
+import OpenModalButton from "./openModalButton";
 
 const OpenCreateTodoButton = () => {
   const { email } = useAuth();
@@ -16,7 +17,7 @@ const OpenCreateTodoButton = () => {
       {email ? (
         <div className="flex items-center gap-x-4">
           <button
-            className="rounded-md border border-black h-8 px-3 py-1"
+            className="border rounded-md p-2 text-gray-200 text-sm bg-black border-gray-600 hover:bg-zinc-950"
             onClick={() => {
               const dialog = document.getElementById(
                 "create_todo_modal"
@@ -26,10 +27,10 @@ const OpenCreateTodoButton = () => {
               }
             }}
           >
-            NEW To Do
+            New To Do
           </button>
           <select
-            className="rounded-md border h-8 border-black px-3 py-1"
+            className="border rounded-md p-2 text-gray-200 text-sm bg-black border-gray-600 hover:bg-zinc-950"
             value={sortingStatus}
             onChange={handleSortChange}
           >
@@ -40,7 +41,12 @@ const OpenCreateTodoButton = () => {
           </select>
         </div>
       ) : (
-        <div></div>
+        <OpenModalButton
+          className="border rounded-md p-2 text-gray-200 text-sm bg-black border-gray-600 hover:bg-zinc-950"
+          modalId="register_modal"
+        >
+          Register
+        </OpenModalButton>
       )}
     </>
   );

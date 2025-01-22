@@ -3,16 +3,21 @@
 import { todoValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Calendar1Icon, StickyNoteIcon, TextIcon, XIcon } from "lucide-react";
+import {
+  FieldError,
+  FieldValues,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+import {
+  Calendar1Icon,
+  LoaderIcon,
+  StickyNoteIcon,
+  TextIcon,
+  XIcon,
+} from "lucide-react";
 import { useAuth } from "@/lib/context/authContext";
-import { useTodos } from "@/lib/context/todoContext";
-
-enum TodoStatus {
-  "PENDING",
-  "IN_PROGRESS",
-  "COMPLETED",
-}
+import { Todo, TodoStatus, useTodos } from "@/lib/context/todoContext";
 
 interface UpdateTodoModalProps {
   todoId: number;
@@ -45,7 +50,7 @@ export default function UpdateTodoModal({
     setValue("description", currentDescription);
   }, [currentTitle, currentDescription, setValue]);
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
     setIsLoading(true);
 
     try {
@@ -72,23 +77,21 @@ export default function UpdateTodoModal({
         const updatedTodo = await response.json();
 
         const updatedTodos = todos.map((todo) =>
-          todo.data.id === todoId ? { ...todo, data: updatedTodo } : todo
+          todo.id === todoId ? { ...todo, ...updatedTodo } : todo
         );
-
         updateTodos(updatedTodos);
 
         const todosInLocalStorage = JSON.parse(
           localStorage.getItem("todos") || "[]"
         );
-        const updatedTodosInLocalStorage = todosInLocalStorage.map((todo) =>
-          todo.id === todoId ? { ...todo, data: updatedTodo } : todo
+        const updatedTodosInLocalStorage = todosInLocalStorage.map(
+          (todo: Todo) =>
+            todo.id === todoId ? { ...todo, ...updatedTodo } : todo
         );
         localStorage.setItem(
           "todos",
           JSON.stringify(updatedTodosInLocalStorage)
         );
-
-        alert("Todo updated successfully!");
 
         const modal = document.getElementById("edit_todo_modal");
         if (modal instanceof HTMLDialogElement) {
@@ -110,20 +113,21 @@ export default function UpdateTodoModal({
     <dialog id="edit_todo_modal" className="modal">
       <div className="remove-scrollbar fixed inset-0 flex items-center justify-center overflow-auto bg-black/25 backdrop-blur-sm">
         <div className="h-96 w-96 flex items-center justify-center text-white">
-          <div className="max-w-md mx-auto p-6 bg-neutral-800 shadow-md rounded-lg">
+          <div className="max-w-md mx-auto p-6 bg-neutral-900 shadow-md shadow-black rounded-lg border border-gray-400">
             <div className="flex justify-between items-center w-full">
-              <h2 className="text-4xl font-semibold mb-4">
-                Edit {currentTitle}
-              </h2>
+              <h2 className="text-4xl font-semibold mb-4">{currentTitle}</h2>
               <form method="dialog">
                 <button>
-                  <XIcon className="text-white size-8 bg-neutral-700 hover:bg-neutral-600 rounded-md" />
+                  <XIcon className="text-white size-8 bg-black hover:bg-neutral-950 rounded-md" />
                 </button>
               </form>
             </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label htmlFor="title" className="block text-sm font-medium ">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium truncate"
+                >
                   Title
                 </label>
                 <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md focus-within:ring-2 focus-within::ring-cyan-500">
@@ -137,8 +141,8 @@ export default function UpdateTodoModal({
                 </div>
 
                 {errors.title && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.title.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.title as FieldError).message}
                   </p>
                 )}
               </div>
@@ -160,8 +164,8 @@ export default function UpdateTodoModal({
                 </div>
 
                 {errors.description && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.description.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.description as FieldError).message}
                   </p>
                 )}
               </div>
@@ -170,7 +174,7 @@ export default function UpdateTodoModal({
                 <label htmlFor="dueDate" className="block text-sm font-medium ">
                   Due date
                 </label>
-                <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md hover:ring-cyan-400 focus-within:ring-2 focus-within::ring-cyan-400">
+                <div className="mt-1 p-2 w-full border flex items-center border-gray-300 rounded-md focus-within:ring-2 focus-within::ring-cyan-400">
                   <Calendar1Icon />
                   <input
                     id="dueDate"
@@ -181,8 +185,8 @@ export default function UpdateTodoModal({
                 </div>
 
                 {errors.dueDate && (
-                  <p className="text-cyan-200 text-sm mt-1">
-                    {errors.dueDate.message}
+                  <p className="text-red-500 text-sm mt-1">
+                    {(errors.dueDate as FieldError).message}
                   </p>
                 )}
               </div>
@@ -190,12 +194,12 @@ export default function UpdateTodoModal({
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-cyan-500 text-white p-2 rounded-md hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border flex items-center justify-center h-full w-full text-xl rounded-md p-2 text-gray-200 bg-black border-gray-600 hover:bg-zinc-950 focus:outline outline-cyan-400"
                 >
                   {!isLoading ? (
-                    "UPDATE"
+                    "Update"
                   ) : (
-                    <span className="animate-spin">...</span>
+                    <LoaderIcon className="animate-spin" />
                   )}
                 </button>
               </div>
