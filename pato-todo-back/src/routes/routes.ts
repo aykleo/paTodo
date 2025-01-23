@@ -6,22 +6,14 @@ import {
   updateTodo,
   createTodo,
   deleteTodo,
-  getAllUsers,
-  deleteAllUsers,
   getAllTodosAll,
-  deleteAllTodos,
-} from "./db";
+} from "../controllers/controllers";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import cors from "cors";
 const app = express();
-const PORT = 3333;
 
 app.use(express.json());
 app.use(cors());
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("TA FUNFANDO");
-});
 
 app.post("/signup", async (req: Request, res: Response) => {
   try {
@@ -38,28 +30,6 @@ app.post("/signup", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error signing up:", error);
     res.status(500).json({ message: "Error signing up" });
-  }
-});
-
-app.get("/users", async (req, res) => {
-  try {
-    const users = await getAllUsers();
-    res.status(200).json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-});
-
-app.delete("/users", async (req, res) => {
-  try {
-    const result = await deleteAllUsers();
-    res
-      .status(200)
-      .json({ message: "All users have been deleted successfully." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to delete users" });
   }
 });
 
@@ -93,9 +63,7 @@ app.post("/createTodo", async (req: Request, res: Response) => {
       const userId = decodeToken?.userId;
       const newTodo = await createTodo(userId, title, description, dueDate);
       if (newTodo) {
-        res
-          .status(200)
-          .json({ data: newTodo, message: "New Todo Created Successfully!!!" });
+        res.status(200).json(newTodo);
       } else {
         res.status(409).send("Bad Request");
       }
@@ -176,20 +144,4 @@ app.get("/getAllTodos", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch todos" });
   }
-});
-
-app.delete("/deleteTodos", async (req: Request, res: Response) => {
-  try {
-    const result = await deleteAllTodos();
-    res
-      .status(200)
-      .json({ message: "All todos have been deleted successfully." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to delete todos" });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });

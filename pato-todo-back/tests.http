@@ -6,9 +6,9 @@ post http://localhost:3333/signup
 Content-Type: application/json
 
 {
-    "username": "testUser",
+    "username": "test",
     "email": "test@gmail.com",
-    "password": "test123"
+    "password": "1234567981"
     
 }
 
@@ -18,24 +18,10 @@ post http://localhost:3333/login
 Content-Type: application/json
 
 {
-    "email": "t1@m.com",
+    "email": "test@test.com",
     "password": "1234567891"
 }
 
-###
-
-post http://localhost:3333/createTodo
-Content-Type: application/json
-
-{
-    "title": "criado 1",
-    "description": "the first"
-}
-
-###
-
-get http://localhost:3333/getTodos
-Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InQxQG0uY29tIiwidXNlcklkIjoxOSwiaWF0IjoxNzM3NDIyMzg0fQ.E9rJbT0Kk0nQXJn0WhsO963avrNVJ-hqn8WzJY-Y_m0"
 
 ###
 

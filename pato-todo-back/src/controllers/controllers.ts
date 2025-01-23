@@ -85,6 +85,7 @@ export const deleteTodo = async (todoId: number) => {
   });
 };
 
+//TEST PURPOSES ONLY
 export const getAllUsers = async () => {
   return await prisma.user.findMany();
 };
