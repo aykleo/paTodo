@@ -10,12 +10,13 @@ import {
 } from "../controllers/controllers";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import cors from "cors";
-const app = express();
 
-app.use(express.json());
-app.use(cors());
+const router = express.Router();
 
-app.post("/signup", async (req: Request, res: Response) => {
+router.use(express.json());
+router.use(cors());
+
+router.post("/signup", async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     const newUser = await createUser(username, email, password);
@@ -33,7 +34,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/login", async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const User = await checkUser(email, password);
@@ -53,7 +54,7 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/createTodo", async (req: Request, res: Response) => {
+router.post("/createTodo", async (req: Request, res: Response) => {
   try {
     const { title, description, dueDate } = req.body;
     const token = req.headers.authorization?.split(" ")[1];
@@ -76,7 +77,7 @@ app.post("/createTodo", async (req: Request, res: Response) => {
   }
 });
 
-app.patch("/updateTodo/:id", async (req: Request, res: Response) => {
+router.patch("/updateTodo/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, status, dueDate } = req.body;
@@ -96,7 +97,7 @@ app.patch("/updateTodo/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/getTodos", async (req: Request, res: Response) => {
+router.get("/getTodos", async (req: Request, res: Response) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
 
@@ -121,7 +122,7 @@ app.get("/getTodos", async (req: Request, res: Response) => {
   }
 });
 
-app.delete("/deleteTodo/:id", async (req: Request, res: Response) => {
+router.delete("/deleteTodo/:id", async (req: Request, res: Response) => {
   try {
     debugger;
     const todo_id = parseInt(req.params.id);
@@ -136,7 +137,7 @@ app.delete("/deleteTodo/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/getAllTodos", async (req: Request, res: Response) => {
+router.get("/getAllTodos", async (req: Request, res: Response) => {
   try {
     const todos = await getAllTodosAll();
     res.status(200).json({ data: todos, message: "All Todos" });
@@ -145,3 +146,5 @@ app.get("/getAllTodos", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch todos" });
   }
 });
+
+export default router;

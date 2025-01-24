@@ -4,10 +4,14 @@ import {
   deleteAllUsers,
   deleteAllTodos,
 } from "../controllers/controllers";
+import cors from "cors";
 
-const app = express();
+const testRouter = express.Router();
 
-app.get("/users", async (req, res) => {
+testRouter.use(express.json());
+testRouter.use(cors());
+
+testRouter.get("/users", async (req, res) => {
   try {
     const users = await getAllUsers();
     res.status(200).json(users);
@@ -17,7 +21,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.delete("/users", async (req, res) => {
+testRouter.delete("/users", async (req, res) => {
   try {
     const result = await deleteAllUsers();
     res
@@ -29,7 +33,7 @@ app.delete("/users", async (req, res) => {
   }
 });
 
-app.delete("/deleteTodos", async (req: Request, res: Response) => {
+testRouter.delete("/deleteTodos", async (req: Request, res: Response) => {
   try {
     const result = await deleteAllTodos();
     res
@@ -40,3 +44,5 @@ app.delete("/deleteTodos", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete todos" });
   }
 });
+
+export default testRouter;
