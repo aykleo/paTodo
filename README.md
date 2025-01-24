@@ -67,7 +67,7 @@ The server will run on `http://localhost:3333` by default.
 1. Navigate to the frontend folder:
 
    ```bash
-   cd pato-todo-frontend
+   cd pato-todo-front
    ```
 
 2. Install dependencies:
